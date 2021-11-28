@@ -20,7 +20,8 @@ import functools
 
 def are_primers_valid(primers):
     """
-    Runs
+    Returns a boolean indicating of a set of primers all pass our conditions to be a valid primer library.
+    Exits early if any of them fail.
     """
     # Run the easy checks first
     easy_valids = map(is_len_gc_valid, primers)
@@ -39,6 +40,12 @@ def are_primers_valid(primers):
 
 
 def get_valid_primers(primers):
+    """
+    Cuts down an input list of primers into a list that only has valid primers.
+
+    Problem to solve: how do we deal with the combinations? Ideally we would return the maximum subset of primers satisfying the edit distance, but
+    this smells of an NP-hard problem. May have to just do greedy in some way? No idea.
+    """
     pass
 
 
