@@ -69,6 +69,8 @@ class BasePrimerGenerator:
         valid = are_primers_valid(self.primers)
         if not valid:
             print("ERROR: Found invalid primers in final library! Error with algorithm.")
+        else:
+            print("Primers validated (all good) before writing!")
 
 
     def found_new_primer(self, primer):
