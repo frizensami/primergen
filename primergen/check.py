@@ -12,6 +12,7 @@ MIN_EDIT_DISTANCE = 0.4 * PRIMER_LENGTH
 MIN_CG_CONTENT = 45
 MAX_CG_CONTENT = 55
 
+
 from Bio.SeqUtils import GC
 import editdistance
 import itertools
@@ -20,20 +21,24 @@ import functools
 
 def are_primers_valid(primers):
     """
-    Returns a boolean indicating of a set of primers all pass our conditions to be a valid primer library.
+    Returns a boolean indicating of a list of primers all mutually pass our conditions to be a valid primer library.
     Exits early if any of them fail.
     """
     # Run the easy checks first
     easy_valids = map(is_len_gc_valid, primers)
     is_all_valid_easy = all(easy_valids)
     if not is_all_valid_easy:
-        print(f"Either wrong length or GC failure")
+        print(
+            f"PRIMER LIBRARY FAILURE: >= 1 primers have wrong length or wrong GC proportion"
+        )
         return False
 
     # Run the n-choose-2 valids now
     for (p1, p2) in itertools.combinations(primers, 2):
         if not is_primer_pair_valid(p1, p2):
-            print(f"{p1} and {p2} are not {MIN_EDIT_DISTANCE} edit distance apart!")
+            print(
+                f"PRIMER LIBRARY FAILURE: {p1} and {p2} are not {MIN_EDIT_DISTANCE} edit distance apart!"
+            )
             return False
 
     return True
@@ -66,7 +71,7 @@ def is_len_gc_valid(primer) -> bool:
 def is_primer_pair_valid(p1, p2):
     """
     Memoized to avoid computing edit distance multiple times for identical string pairs
-    TODO: is this memoized on value or `x is y`?
+    TODO: is this memoized on value or object ID itself?
     """
     dist = editdistance.eval(p1, p2)
     return dist > MIN_EDIT_DISTANCE
