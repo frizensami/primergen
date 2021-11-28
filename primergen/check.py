@@ -67,7 +67,7 @@ def is_len_gc_valid(primer) -> bool:
     return is_right_length(primer) and is_gc_valid(primer)
 
 
-@functools.lru_cache(maxsize=None)
+@functools.lru_cache(maxsize=100000)
 def is_primer_pair_valid(p1, p2):
     """
     Memoized to avoid computing edit distance multiple times for identical string pairs
