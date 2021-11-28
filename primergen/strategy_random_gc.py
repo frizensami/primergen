@@ -29,11 +29,10 @@ def generate_random(target=2000):
             )
             # Create new primer
             primer = random_primer_with_balanced_gc()
-            assert is_gc_valid(primer)
             print(primer)
             # Check for edit distance
             for other_primer in primers:
-                if not is_primer_pair_valid(primer, other_primer):
+                if not is_primer_pair_valid(primer, other_primer, MIN_EDIT_DISTANCE):
                     edit_invalid += 1
                     break
             else:

@@ -17,6 +17,7 @@ from Bio.SeqUtils import GC
 import editdistance
 import itertools
 import functools
+from polyleven import levenshtein
 
 
 def are_primers_valid(primers):
@@ -35,7 +36,7 @@ def are_primers_valid(primers):
 
     # Run the n-choose-2 valids now
     for (p1, p2) in itertools.combinations(primers, 2):
-        if not is_primer_pair_valid(p1, p2):
+        if not is_primer_pair_valid(p1, p2, MIN_EDIT_DISTANCE):
             print(
                 f"PRIMER LIBRARY FAILURE: {p1} and {p2} are not {MIN_EDIT_DISTANCE} edit distance apart!"
             )
@@ -68,10 +69,15 @@ def is_len_gc_valid(primer) -> bool:
 
 
 @functools.lru_cache(maxsize=100000)
-def is_primer_pair_valid(p1, p2):
+def is_primer_pair_valid(p1, p2, limit=None):
     """
     Memoized to avoid computing edit distance multiple times for identical string pairs
+    Add a limit to use the possibly faster polyleven library (only care about edit distances up to a point, then return early I expect)
     TODO: is this memoized on value or object ID itself?
     """
-    dist = editdistance.eval(p1, p2)
+    dist = -1
+    if limit:
+        dist = levenshtein(p1, p2)
+    else:
+        dist = editdistance.eval(p1, p2)
     return dist > MIN_EDIT_DISTANCE
