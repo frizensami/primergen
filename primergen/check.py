@@ -64,5 +64,9 @@ def is_len_gc_valid(primer) -> bool:
 
 @functools.lru_cache(maxsize=None)
 def is_primer_pair_valid(p1, p2):
+    """
+    Memoized to avoid computing edit distance multiple times for identical string pairs
+    TODO: is this memoized on value or `x is y`?
+    """
     dist = editdistance.eval(p1, p2)
     return dist > MIN_EDIT_DISTANCE
