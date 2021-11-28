@@ -5,6 +5,7 @@ from util import write_primers, random_primer
 import time
 import random
 
+PRIMERS_PER_SECOND_PERIOD_SEC = 1
 
 class BasePrimerGenerator:
     """
@@ -18,6 +19,10 @@ class BasePrimerGenerator:
         self.gc_errors = 0
         self.edit_errors = 0
         self.strategy = strategy
+        # Tracking primers per second
+        self.prev_primers_time = 0
+        self.prev_primers_count = 0
+        self.primers_per_second = 0
 
     def execute(self):
         """
@@ -36,6 +41,7 @@ class BasePrimerGenerator:
         Call just before starting primer generation
         """
         self.start_time = time.process_time()
+        self.prev_primers_time = self.start_time
 
     def generate(self):
         """
@@ -81,6 +87,18 @@ class BasePrimerGenerator:
         self.edit_errors += 1
 
     def print_metrics(self):
+        # Elapsed
+        cur_time =  time.process_time()
+        elapsed_sec = cur_time - self.start_time
+        elapsed_min = int(elapsed_sec / 60)
+        elapsed_min_sec = int(elapsed_sec % 60)
+        # Count primers per second
+        if cur_time - self.prev_primers_time > PRIMERS_PER_SECOND_PERIOD_SEC:
+            # We've passed the period we want to compute PPS for
+            current_num_primers = len(self.primers)
+            self.primers_per_second = round((current_num_primers - self.prev_primers_count) / (cur_time - self.prev_primers_time), 2)
+            self.prev_primers_time = cur_time
+            self.prev_primers_count = current_num_primers
         print(
-            f"Iteration: {self.iterations}\tPrimers:{len(self.primers)}\tGC invalid: {self.gc_errors}\tEdit invalid\t{self.edit_errors}"
+            f"CPU Elapsed: {elapsed_min} min {elapsed_min_sec} sec\tIteration: {self.iterations}\tPrimers: {len(self.primers)}\tPPS: {self.primers_per_second}\tGC invalid: {self.gc_errors}\tEdit invalid\t{self.edit_errors}\n"
         )
