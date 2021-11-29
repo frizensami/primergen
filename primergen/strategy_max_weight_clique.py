@@ -60,8 +60,6 @@ class CliqueMaxWeightPrimerGenerator(BasePrimerGenerator):
         print(f"Number of primers found: {len(final_primers)}")
 
 
-
-
     def generate_n_primers(self, n):
         print(f"Generating {n} primers to begin...")
         primers = []
