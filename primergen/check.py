@@ -7,7 +7,7 @@ Checks whether a list of primers satisfies these constraints:
 3. Edit distance between any two primers is at least 0.4L (8)
 """
 
-TARGET_PRIMERS = 5000
+TARGET_PRIMERS = 10000
 PRIMER_LENGTH = 20
 MIN_EDIT_DISTANCE = int(0.4 * PRIMER_LENGTH)
 MIN_CG_CONTENT = 45

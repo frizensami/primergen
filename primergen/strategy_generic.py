@@ -72,6 +72,7 @@ class BasePrimerGenerator:
             print("ERROR: Found invalid primers in final library! Error with algorithm.")
         else:
             print("Primers validated (all good) before writing!")
+            print(f"Produced {len(self.primers)} primers in {total_time} in {self.strategy} mode")
 
 
     def found_new_primer(self, primer):
@@ -110,5 +111,5 @@ class BasePrimerGenerator:
             self.prev_primers_time = cur_time
             self.prev_primers_count = current_num_primers
         print(
-            f"CPU Elapsed: {elapsed_min} min {elapsed_min_sec} sec\tIteration: {self.iterations}\tPrimers: {len(self.primers)}\tPPS: {self.primers_per_second}\tPPI%: {round(len(self.primers)/self.iterations * 100, 5)}\tGC invalid: {self.gc_errors}\tEdit invalid\t{self.edit_errors} ({round(self.edit_errors /  self.iterations * 100, 5)}%)\n"
+            f"Strategy:{self.strategy}\nCPU Elapsed: {elapsed_min} min {elapsed_min_sec} sec\tIteration: {self.iterations}\tPrimers: {len(self.primers)}\tPPS: {self.primers_per_second}\tPPI%: {round(len(self.primers)/self.iterations * 100, 5)}\tGC invalid: {self.gc_errors}\tEdit invalid\t{self.edit_errors} ({round(self.edit_errors /  self.iterations * 100, 5)}%)\n"
         )

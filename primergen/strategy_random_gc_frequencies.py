@@ -18,7 +18,7 @@ Well, not really because we don't have an infinite number of nts.
 
 class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
     def __init__(self, target=TARGET_PRIMERS):
-        super().__init__(target=target, strategy="random-balanced-gc")
+        super().__init__(target=target, strategy="random-balanced-gc-frequencies")
         # Frequencies for each position in the primer
         self.counts = [{'A': 1, 'T': 1, 'G': 1, 'C': 1} for i in range(PRIMER_LENGTH)]
 
@@ -37,8 +37,6 @@ class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
             primer = generate_primer_from_frequencies_and_balanced_gc_by_rerolling(frequencies=inv_frequencies)
             print(primer)
 
-            # Update frequency counts for each position from the new primer
-            self.update_counts_from_new_primer(primer)
 
             # Check for GC content
             if not is_gc_valid(primer):
@@ -51,6 +49,10 @@ class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
                     break
             else:
                 super().found_new_primer(primer)
+                # Update frequency counts for each position from the new primer
+                self.update_counts_from_new_primer(primer)
+
+
 
     def update_counts_from_new_primer(self, primer):
         # Increase the count for the nucleotide in each position as necessary
