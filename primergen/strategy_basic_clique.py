@@ -41,7 +41,7 @@ class CliquePrimerGenerator(BasePrimerGenerator):
                 edges.append((idx1, idx2))
                 weights.append(dist)
 
-        print(f"Adding {len(edges}) edges...")
+        print(f"Adding {len(edges)} edges...")
         g.add_edges_from(edges)
         print(f"Done adding edges")
 
