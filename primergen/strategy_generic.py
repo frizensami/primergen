@@ -110,5 +110,5 @@ class BasePrimerGenerator:
             self.prev_primers_time = cur_time
             self.prev_primers_count = current_num_primers
         print(
-            f"CPU Elapsed: {elapsed_min} min {elapsed_min_sec} sec\tIteration: {self.iterations}\tPrimers: {len(self.primers)}\tPPS: {self.primers_per_second}\tGC invalid: {self.gc_errors}\tEdit invalid\t{self.edit_errors}\n"
+            f"CPU Elapsed: {elapsed_min} min {elapsed_min_sec} sec\tIteration: {self.iterations}\tPrimers: {len(self.primers)}\tPPS: {self.primers_per_second}\tPPI%: {round(len(self.primers)/self.iterations * 100, 5)}\tGC invalid: {self.gc_errors}\tEdit invalid\t{self.edit_errors} ({round(self.edit_errors /  self.iterations * 100, 5)}%)\n"
         )
