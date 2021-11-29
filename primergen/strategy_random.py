@@ -6,7 +6,7 @@ import random
 from strategy_generic import BasePrimerGenerator
 
 class RandomPrimerGenerator(BasePrimerGenerator):
-    def __init__(self, target=2000):
+    def __init__(self, target=TARGET_PRIMERS):
         super().__init__(target=target, strategy="random")
 
     def generate(self):
@@ -25,7 +25,7 @@ class RandomPrimerGenerator(BasePrimerGenerator):
                 continue
             # Check for edit distance
             for other_primer in self.primers:
-                if not is_primer_pair_valid(primer, other_primer):
+                if not is_primer_pair_valid(primer, other_primer, limit=(MIN_EDIT_DISTANCE + 1)):
                     super().new_edit_error()
                     break
             else:

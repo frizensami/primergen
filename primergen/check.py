@@ -7,8 +7,9 @@ Checks whether a list of primers satisfies these constraints:
 3. Edit distance between any two primers is at least 0.4L (8)
 """
 
+TARGET_PRIMERS = 5000
 PRIMER_LENGTH = 20
-MIN_EDIT_DISTANCE = 0.4 * PRIMER_LENGTH
+MIN_EDIT_DISTANCE = int(0.4 * PRIMER_LENGTH)
 MIN_CG_CONTENT = 45
 MAX_CG_CONTENT = 55
 
@@ -36,7 +37,7 @@ def are_primers_valid(primers):
 
     # Run the n-choose-2 valids now
     for (p1, p2) in itertools.combinations(primers, 2):
-        if not is_primer_pair_valid(p1, p2, limit=MIN_EDIT_DISTANCE):
+        if not is_primer_pair_valid(p1, p2, limit=(MIN_EDIT_DISTANCE + 1)):
             print(
                 f"PRIMER LIBRARY FAILURE: {p1} and {p2} are not {MIN_EDIT_DISTANCE} edit distance apart!"
             )
@@ -77,7 +78,15 @@ def is_primer_pair_valid(p1, p2, limit=None):
     """
     dist = -1
     if limit:
-        dist = levenshtein(p1, p2)
+        dist = levenshtein(p1, p2, limit)
     else:
         dist = editdistance.eval(p1, p2)
-    return dist > MIN_EDIT_DISTANCE
+    return dist >= MIN_EDIT_DISTANCE
+
+def get_edit_distance(p1, p2, limit=None):
+    dist = -1
+    if limit:
+        dist = levenshtein(p1, p2, limit)
+    else:
+        dist = editdistance.eval(p1, p2)
+    return dist

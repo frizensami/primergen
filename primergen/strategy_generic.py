@@ -66,6 +66,7 @@ class BasePrimerGenerator:
         write_primers(self.primers, total_time_sec=total_time, strategy=self.strategy)
 
         # Check the primers for errors (after writing, so we can check it ourselves later)
+        print(f"Validating primers after saving...")
         valid = are_primers_valid(self.primers)
         if not valid:
             print("ERROR: Found invalid primers in final library! Error with algorithm.")
@@ -78,6 +79,13 @@ class BasePrimerGenerator:
         Called when we confirm a new primer is found
         """
         self.primers.append(primer)
+
+    def found_new_primers(self, primers):
+        """
+        Called when we confirm a new primer is found
+        """
+        self.primers.extend(primers)
+
 
     def new_iteration(self):
         self.iterations += 1
