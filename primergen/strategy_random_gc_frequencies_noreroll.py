@@ -23,7 +23,7 @@ TODO: store all the primer to primer distances in a file so we can plot a force 
 
 class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
     def __init__(self, target=TARGET_PRIMERS):
-        super().__init__(target=target, strategy="random-balanced-gc-frequencies")
+        super().__init__(target=target, strategy="random-balanced-gc-frequencies-no-reroll")
         # Frequencies for each position in the primer
         self.counts = [{'A': 1, 'T': 1, 'G': 1, 'C': 1} for i in range(PRIMER_LENGTH)]
 
@@ -39,7 +39,7 @@ class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
             # print(inv_frequencies)
 
             # Create new primer
-            primer = generate_primer_from_frequencies_and_balanced_gc_by_rerolling(frequencies=inv_frequencies)
+            primer = generate_primer_from_frequencies_and_balanced_gc(frequencies=inv_frequencies)
             print(primer)
 
 

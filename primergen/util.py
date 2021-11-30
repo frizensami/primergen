@@ -64,8 +64,8 @@ def generate_primer_from_frequencies_and_balanced_gc(
     # This primer may not have a balanced GC count, so count GCs
     num_gcs = sum(map(lambda nt: 1 if nt == "G" or nt == "C" else 0, primer))
 
-    print(f"Initial primer is {primer}")
-    print(f"We have {num_gcs} G and Cs")
+    # print(f"Initial primer is {primer}")
+    # print(f"We have {num_gcs} G and Cs")
 
     if num_gcs < min_gc:
         # Do we need MORE GCs?
@@ -80,9 +80,9 @@ def generate_primer_from_frequencies_and_balanced_gc(
         # Insert the G/Cs at those positions
         for idx in indices_to_insert_at:
             primer[idx] = random.choice(GC)
-        print(f"Need {diff} more GCs")
-        print(f"Non GCs are at indices {non_gc_indices}")
-        print(f"We will insert GCs at {indices_to_insert_at}")
+        # print(f"Need {diff} more GCs")
+        # print(f"Non GCs are at indices {non_gc_indices}")
+        # print(f"We will insert GCs at {indices_to_insert_at}")
 
     elif num_gcs > max_gc:
         # Or maybe we have too many GCs
@@ -96,11 +96,11 @@ def generate_primer_from_frequencies_and_balanced_gc(
         # Insert the A/Ts at those positions
         for idx in indices_to_insert_at:
             primer[idx] = random.choice(AT)
-        print(f"Need {diff} fewer GCs")
-        print(f"GCs are at indices {gc_indices}")
-        print(f"We will insert ATs at {indices_to_insert_at}")
+        # print(f"Need {diff} fewer GCs")
+        # print(f"GCs are at indices {gc_indices}")
+        # print(f"We will insert ATs at {indices_to_insert_at}")
 
-    print(f"Final primer: {primer}")
+    # print(f"Final primer: {primer}")
     return "".join(primer)
 
 def generate_primer_from_frequencies_and_balanced_gc_by_rerolling(
