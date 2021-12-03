@@ -1,31 +1,31 @@
 #!/usr/bin/env python3
 import numpy as np
 from check import *
-from util import write_primers, generate_primer_from_frequencies_and_balanced_gc,  generate_primer_from_frequencies_and_balanced_gc_by_rerolling
+from util import (
+    write_primers,
+    generate_primer_from_frequencies_and_balanced_gc,
+    generate_primer_from_frequencies_and_balanced_gc_by_rerolling,
+)
 import time
 import random
 from strategy_generic import BasePrimerGenerator
 
 """
-TODO: New strings are generated based on the inverse of the current frequencies for each position. Fix GC after.
-The hope is that we get a string that is as different as possible from the rest.
-
-E.g., if we current have primers ATGC.., TGCA, GCAT.., the next primer will probably be CATG... (least popular choices for all those positions)
-
-I guess this is inspired by Cantor's diagonalization argument where we generate new numbers by putting a new value in each position.
-Well, not really because we don't have an infinite number of nts.
-
-TODO: make new strategy where the GC-imbalance is corrected deterministically to prevent re-rolls.
+TODO: optimize for furthest possible edit distance (increase edit distance minimum and see who can go the furthest)
+TODO: do the graph-exclusion strategy from DeLOB
 TODO: make new strategy where sometimes we randomize completely
 TODO: store primers found over time / iteraitons as a graph
 TODO: store all the primer to primer distances in a file so we can plot a force directed graph of how far apart everything is
 """
 
+
 class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
     def __init__(self, target=TARGET_PRIMERS):
-        super().__init__(target=target, strategy="random-balanced-gc-frequencies-no-reroll")
+        super().__init__(
+            target=target, strategy="random-balanced-gc-frequencies-no-reroll"
+        )
         # Frequencies for each position in the primer
-        self.counts = [{'A': 1, 'T': 1, 'G': 1, 'C': 1} for i in range(PRIMER_LENGTH)]
+        self.counts = [{"A": 1, "T": 1, "G": 1, "C": 1} for i in range(PRIMER_LENGTH)]
 
     def generate(self):
         while len(self.primers) < self.target:
@@ -39,9 +39,10 @@ class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
             # print(inv_frequencies)
 
             # Create new primer
-            primer = generate_primer_from_frequencies_and_balanced_gc(frequencies=inv_frequencies)
+            primer = generate_primer_from_frequencies_and_balanced_gc(
+                frequencies=inv_frequencies
+            )
             print(primer)
-
 
             # Check for GC content
             if not is_gc_valid(primer):
@@ -49,15 +50,15 @@ class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
                 continue
             # Check for edit distance
             for other_primer in self.primers:
-                if not is_primer_pair_valid(primer, other_primer, limit=(MIN_EDIT_DISTANCE + 1)):
+                if not is_primer_pair_valid(
+                    primer, other_primer, limit=(MIN_EDIT_DISTANCE + 1)
+                ):
                     super().new_edit_error()
                     break
             else:
                 super().found_new_primer(primer)
                 # Update frequency counts for each position from the new primer
                 self.update_counts_from_new_primer(primer)
-
-
 
     def update_counts_from_new_primer(self, primer):
         # Increase the count for the nucleotide in each position as necessary
@@ -75,10 +76,14 @@ class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
         """
         inverse_frequencies = []
         for count in self.counts:
-            inverse_count = [1 / count['A'], 1 / count['T'], 1 / count['G'], 1 / count['C']]
+            inverse_count = [
+                1 / count["A"],
+                1 / count["T"],
+                1 / count["G"],
+                1 / count["C"],
+            ]
             inverse_frequencies.append(inverse_count)
         return inverse_frequencies
-
 
 
 if __name__ == "__main__":

@@ -20,8 +20,19 @@ Metrics:
 - 2013: **TagGD** - super important, has actual GitHub code! Generates unique DNA sequences with edit distance and GC content (https://github.com/pelinakan/UBD - https://mybiosoftware.com/taggd-dna-tag-generation-demultiplexing.html) 
   - This seems pretty slow, for just 500 primers with min-8-edit distance, this took ages
 - 2017: **Organick et al**, “Scaling up DNA data storage and random access retrieval”, very similar, using filtering and then BLAST 
-- 2018: DeLOB modified for use in https://academic.oup.com/article/synbio/1/3/ysx008/4817474 (2018) to generate 20-mers 
-- 
+- 2018: DeLOB modified for use in https://academic.oup.com/synbio/article/3/1/ysx008/4817474 (2018) to generate 20-mers 
+
+
+## TODOs
+- TODO: MOST IMPT Implement the network graph node-and-neighbour removal algorithm
+  - MOST IMPT See if we can improve that by not just randomly removing nodes  (centrality etc)
+- TODO: see if we can optimize for furthest possible edit distance
+- TODO: Re-run with further edit distance
+- TODO: Can we generate all balanced-GC strings?
+- TODO: make new strategy where sometimes we randomize completely
+- TODO: store primers found over time / iteraitons as a graph
+- TODO: store all the primer to primer distances in a file so we can plot a force directed graph of how far apart everything is
+
 
 ## DeLOB protocol (from https://www.pnas.org/content/pnas/106/7/2289.full.pdf)
 

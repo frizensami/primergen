@@ -12,6 +12,7 @@ from check import *
 from strategy_generic import BasePrimerGenerator
 from util import random_primer_with_balanced_gc
 
+
 class CliquePrimerGenerator(BasePrimerGenerator):
     def __init__(self, target=TARGET_PRIMERS):
         super().__init__(target=target, strategy="clique")
@@ -36,8 +37,10 @@ class CliquePrimerGenerator(BasePrimerGenerator):
             dist = get_edit_distance(primer1, primer2, limit=MIN_EDIT_DISTANCE)
             # If these are a valid pair, add them as an edge
             if dist >= MIN_EDIT_DISTANCE:
-                print(f"Adding edge between {idx1} and {idx2}, distance is at least {dist}")
-                #g.add_edge(idx1, idx2, weight=dist)
+                print(
+                    f"Adding edge between {idx1} and {idx2}, distance is at least {dist}"
+                )
+                # g.add_edge(idx1, idx2, weight=dist)
                 edges.append((idx1, idx2))
                 weights.append(dist)
 
@@ -46,16 +49,28 @@ class CliquePrimerGenerator(BasePrimerGenerator):
         print(f"Done adding edges")
 
         print(f"Computing largest cliques...")
-        largest_clique = next(nx.algorithms.clique.find_cliques(g))
+        largest_clique = None
+        largest_clique_len = 0
+        interrupted = False
+        try:
+            for clique in nx.algorithms.clique.find_cliques(g):
+                if len(clique) > largest_clique_len:
+                    largest_clique_len = len(clique)
+                    largest_clique = clique
+                    print(f"Largest clique so far has {len(clique)} nodes")
+                    print(largest_clique)
+        except KeyboardInterrupt:
+            print("We were interrupted in the middle of clique finding!")
+            interrupted = True
+
         print(f"Done computing largest cliques...")
         print(largest_clique)
 
         final_primers = [primers[idx] for idx in largest_clique]
         self.found_new_primers(final_primers)
         print(f"Number of primers found: {len(final_primers)}")
-
-
-
+        if interrupted:
+            raise KeyboardInterrupt
 
     def generate_n_primers(self, n):
         print(f"Generating {n} primers to begin...")
@@ -64,7 +79,6 @@ class CliquePrimerGenerator(BasePrimerGenerator):
             primers.append(random_primer_with_balanced_gc())
         print(f"Done generating {n} primers")
         return primers
-
 
 
 if __name__ == "__main__":
