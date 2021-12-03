@@ -7,12 +7,14 @@ import random
 
 PRIMERS_PER_SECOND_PERIOD_SEC = 1
 
+
 class BasePrimerGenerator:
     """
     Generic class for all primer generators.
     Helps to unify metrics to compare different primer generation methods, saving to file, etc.
     """
-    def __init__(self, target=2000, strategy="base"):
+
+    def __init__(self, target=TARGET_PRIMERS, strategy="base"):
         self.target = target
         self.primers = []
         self.iterations = 0
@@ -23,6 +25,9 @@ class BasePrimerGenerator:
         self.prev_primers_time = 0
         self.prev_primers_count = 0
         self.primers_per_second = 0
+        # Times that primers were found
+        # Expect list of tuples, each tuple is (time, number of primers)
+        self.primer_found_times = []
 
     def execute(self):
         """
@@ -49,7 +54,6 @@ class BasePrimerGenerator:
         """
         raise NotImplementedError
 
-
     def finish(self):
         """
         Call after filling up primer list
@@ -62,31 +66,40 @@ class BasePrimerGenerator:
         print(self.primers)
         print(f"Total time (sec): {total_time}")
 
-        # Write to file
-        write_primers(self.primers, total_time_sec=total_time, strategy=self.strategy)
+        # Write all primers and the times they were found to file
+        write_primers(
+            self.primers,
+            self.primer_found_times,
+            total_time_sec=total_time,
+            strategy=self.strategy,
+        )
 
         # Check the primers for errors (after writing, so we can check it ourselves later)
         print(f"Validating primers after saving...")
         valid = are_primers_valid(self.primers)
         if not valid:
-            print("ERROR: Found invalid primers in final library! Error with algorithm.")
+            print(
+                "ERROR: Found invalid primers in final library! Error with algorithm."
+            )
         else:
             print("Primers validated (all good) before writing!")
-            print(f"Produced {len(self.primers)} primers in {total_time} in {self.strategy} mode")
-
+            print(
+                f"Produced {len(self.primers)} primers in {total_time} in {self.strategy} mode"
+            )
 
     def found_new_primer(self, primer):
         """
         Called when we confirm a new primer is found
         """
         self.primers.append(primer)
+        self.log_new_primer_time()
 
     def found_new_primers(self, primers):
         """
         Called when we confirm a new primer is found
         """
         self.primers.extend(primers)
-
+        self.log_new_primer_time()
 
     def new_iteration(self):
         self.iterations += 1
@@ -97,9 +110,15 @@ class BasePrimerGenerator:
     def new_edit_error(self):
         self.edit_errors += 1
 
+    def log_new_primer_time(self):
+        # Add the new observation to the list
+        cur_time = time.process_time()
+        total_time = cur_time - self.start_time
+        self.primer_found_times.append((cur_time, len(self.primers)))
+
     def print_metrics(self):
         # Elapsed
-        cur_time =  time.process_time()
+        cur_time = time.process_time()
         elapsed_sec = cur_time - self.start_time
         elapsed_min = int(elapsed_sec / 60)
         elapsed_min_sec = int(elapsed_sec % 60)
@@ -107,7 +126,11 @@ class BasePrimerGenerator:
         if cur_time - self.prev_primers_time > PRIMERS_PER_SECOND_PERIOD_SEC:
             # We've passed the period we want to compute PPS for
             current_num_primers = len(self.primers)
-            self.primers_per_second = round((current_num_primers - self.prev_primers_count) / (cur_time - self.prev_primers_time), 2)
+            self.primers_per_second = round(
+                (current_num_primers - self.prev_primers_count)
+                / (cur_time - self.prev_primers_time),
+                2,
+            )
             self.prev_primers_time = cur_time
             self.prev_primers_count = current_num_primers
         print(

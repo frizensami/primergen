@@ -83,6 +83,7 @@ def is_primer_pair_valid(p1, p2, limit=None):
         dist = editdistance.eval(p1, p2)
     return dist >= MIN_EDIT_DISTANCE
 
+
 def get_edit_distance(p1, p2, limit=None):
     dist = -1
     if limit:

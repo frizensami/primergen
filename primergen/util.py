@@ -17,17 +17,25 @@ def get_filestamp(suffix=None):
     return timestr
 
 
-def write_primers(primers, total_time_sec=-1, strategy=""):
+def write_primers(primers, primer_found_times, total_time_sec=-1, strategy=""):
     # Write primer
     os.makedirs(DATA_FOLDER, exist_ok=True)
+    path_without_ext = os.path.join(
+        DATA_FOLDER, get_filestamp(suffix=f"{strategy}-{len(primers)}primers")
+    )
     with open(
-        os.path.join(
-            DATA_FOLDER, get_filestamp(suffix=f"{strategy}-{len(primers)}primers.txt")
-        ),
+        path_without_ext + ".txt",
         "w",
     ) as f:
         f.write(f"Total time (seconds):\t{total_time_sec}\n")
         f.write("\n".join(primers))
+
+    with open(
+        path_without_ext + "-primertimes.txt",
+        "w",
+    ) as f:
+        for (time, primers) in primer_found_times:
+            f.write(f"{time},{primers}\n")
 
 
 def random_primer(length=20):
@@ -58,9 +66,7 @@ def generate_primer_from_frequencies_and_balanced_gc(
     frequencies, length=20, min_gc=9, max_gc=11
 ):
     # Generate /length/ number of nts with relative frequencies
-    primer = [
-        random.choices(ALPHABET, frequencies[i], k=1)[0] for i in range(length)
-    ]
+    primer = [random.choices(ALPHABET, frequencies[i], k=1)[0] for i in range(length)]
     # This primer may not have a balanced GC count, so count GCs
     num_gcs = sum(map(lambda nt: 1 if nt == "G" or nt == "C" else 0, primer))
 
@@ -87,7 +93,7 @@ def generate_primer_from_frequencies_and_balanced_gc(
     elif num_gcs > max_gc:
         # Or maybe we have too many GCs
         diff = num_gcs - max_gc
-        #Where we could add ATs (where there's only Gs and Cs)
+        # Where we could add ATs (where there's only Gs and Cs)
         gc_indices = [
             idx for idx, elem in enumerate(primer) if elem == "G" or elem == "C"
         ]
@@ -102,6 +108,7 @@ def generate_primer_from_frequencies_and_balanced_gc(
 
     # print(f"Final primer: {primer}")
     return "".join(primer)
+
 
 def generate_primer_from_frequencies_and_balanced_gc_by_rerolling(
     frequencies, length=20, min_gc=9, max_gc=11

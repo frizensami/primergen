@@ -17,20 +17,21 @@ Metrics:
   - DeLOB uses: Blast tool with the -F off option turned
 - 2012: ***Schwartz et al**: “Accurate gene synthesis with tag-directed retrieval of sequence-verified DNA molecules” 
   - 2016: Bornholt et al: freeloads off Schwartz
-- 2013: **TagGD** - super important, has actual GitHub code! Generates unique DNA sequences with edit distance and GC content (https://github.com/pelinakan/UBD - https://mybiosoftware.com/taggd-dna-tag-generation-demultiplexing.html) 
+- 2013: **TagGD** - super important, has actual GitHub code! Gene rates unique DNA sequences with edit distance and GC content (https://github.com/pelinakan/UBD - https://mybiosoftware.com/taggd-dna-tag-generation-demultiplexing.html) 
   - This seems pretty slow, for just 500 primers with min-8-edit distance, this took ages
 - 2017: **Organick et al**, “Scaling up DNA data storage and random access retrieval”, very similar, using filtering and then BLAST 
 - 2018: DeLOB modified for use in https://academic.oup.com/synbio/article/3/1/ysx008/4817474 (2018) to generate 20-mers 
 
 
 ## TODOs
+- TODO: store primers found over time / iterations as a graph
+- TODO: Re-run with further edit distance
+  - With fixed time, no clear result difference. 10/9/9/10 primers random/gc/freq/noreroll. More PPI for last two but the advantage is not clear yet (4/7/9/8) * 10^-5.
 - TODO: MOST IMPT Implement the network graph node-and-neighbour removal algorithm
   - MOST IMPT See if we can improve that by not just randomly removing nodes  (centrality etc)
 - TODO: see if we can optimize for furthest possible edit distance
-- TODO: Re-run with further edit distance
-- TODO: Can we generate all balanced-GC strings?
+- TODO: Can we generate all balanced-GC strigs?
 - TODO: make new strategy where sometimes we randomize completely
-- TODO: store primers found over time / iteraitons as a graph
 - TODO: store all the primer to primer distances in a file so we can plot a force directed graph of how far apart everything is
 
 
