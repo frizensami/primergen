@@ -16,7 +16,7 @@ from util import random_primer_with_balanced_gc
 
 class CliquePrimerGenerator(BasePrimerGenerator):
     def __init__(self, target=TARGET_PRIMERS):
-        super().__init__(target=target, strategy="clique")
+        super().__init__(target=target, strategy="delob")
         self.init_primers = []
 
     def generate(self):

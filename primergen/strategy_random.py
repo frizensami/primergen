@@ -25,7 +25,7 @@ class RandomPrimerGenerator(BasePrimerGenerator):
                 continue
             # Check for edit distance
             for other_primer in self.primers:
-                if not is_primer_pair_valid(primer, other_primer, limit=(MIN_EDIT_DISTANCE + 1)):
+                if not is_primer_pair_valid(primer, other_primer, limit=MIN_EDIT_DISTANCE)
                     super().new_edit_error()
                     break
             else:

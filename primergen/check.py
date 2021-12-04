@@ -7,8 +7,10 @@ Checks whether a list of primers satisfies these constraints:
 3. Edit distance between any two primers is at least 0.4L (8)
 """
 
-RANDOM_PRIMERS_TO_GENERATE = TARGET_PRIMERS * 1
+# Minimum number of acceptable primers
 TARGET_PRIMERS = 2000
+# If we are generating more primers to cut down to the target, how many should we have?
+RANDOM_PRIMERS_TO_GENERATE = TARGET_PRIMERS * 1
 PRIMER_LENGTH = 20
 MIN_EDIT_DISTANCE = int(0.4 * PRIMER_LENGTH)
 MIN_CG_CONTENT = 45
@@ -38,7 +40,7 @@ def are_primers_valid(primers):
 
     # Run the n-choose-2 valids now
     for (p1, p2) in itertools.combinations(primers, 2):
-        if not is_primer_pair_valid(p1, p2, limit=(MIN_EDIT_DISTANCE + 1)):
+        if not is_primer_pair_valid(p1, p2, limit=MIN_EDIT_DISTANCE):
             print(
                 f"PRIMER LIBRARY FAILURE: {p1} and {p2} are not {MIN_EDIT_DISTANCE} edit distance apart!"
             )
