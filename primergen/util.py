@@ -17,7 +17,9 @@ def get_filestamp(suffix=None):
     return timestr
 
 
-def write_primers(primers, primer_found_times, total_time_sec=-1, strategy=""):
+def write_primers(
+    primers, primer_found_times, num_starting_primers=-1, total_time_sec=-1, strategy=""
+):
     # Write primer
     os.makedirs(DATA_FOLDER, exist_ok=True)
     path_without_ext = os.path.join(
@@ -29,6 +31,9 @@ def write_primers(primers, primer_found_times, total_time_sec=-1, strategy=""):
         "w",
     ) as f:
         f.write(f"Total time (seconds):\t{total_time_sec}\n")
+        f.write(
+            f"Number of initial primers we cut down from (-1 if doesn't apply):\t{num_starting_primers}\n"
+        )
         f.write("\n".join(primers))
     # Write the times we found each primer to graph it later
     with open(

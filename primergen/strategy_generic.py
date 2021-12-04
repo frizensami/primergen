@@ -16,8 +16,10 @@ class BasePrimerGenerator:
 
     def __init__(self, target=TARGET_PRIMERS, strategy="base"):
         self.target = target
+        # Subclass updates this if they start with a big list of primers and cut them down to find the final list
+        self.num_starting_primers = 0
         self.primers = []
-        self.iterations = 0
+        self.iterations = 1
         self.gc_errors = 0
         self.edit_errors = 0
         self.strategy = strategy
@@ -47,6 +49,8 @@ class BasePrimerGenerator:
         """
         self.start_time = time.process_time()
         self.prev_primers_time = self.start_time
+        # Log the start time of the algorithm so algorithms that generate primers MUCH later in the cycle don't look unfairly good
+        self.log_new_primer_time()
 
     def generate(self):
         """
@@ -63,13 +67,15 @@ class BasePrimerGenerator:
         total_time = end_time - self.start_time
 
         # Print stats
-        print(self.primers)
         print(f"Total time (sec): {total_time}")
+        print("Primers:")
+        print(self.primers)
 
         # Write all primers and the times they were found to file
         write_primers(
             self.primers,
             self.primer_found_times,
+            num_starting_primers=self.num_starting_primers,
             total_time_sec=total_time,
             strategy=self.strategy,
         )

@@ -12,6 +12,10 @@ import networkx as nx
 from check import *
 from strategy_generic import BasePrimerGenerator
 from util import random_primer_with_balanced_gc
+import random
+import math
+
+PRINT_EVERY_NTH_ITERATION_N = 20000
 
 
 class CliquePrimerGenerator(BasePrimerGenerator):
@@ -21,57 +25,73 @@ class CliquePrimerGenerator(BasePrimerGenerator):
 
     def generate(self):
         # Generating large number N of initial primers
-        N = int(self.target * 1)
+        N = int(RANDOM_PRIMERS_TO_GENERATE)
         primers = self.generate_n_primers(n=N)
+        self.num_starting_primers = N  # For writing to file later
+
+        # How many
+        combinations = math.comb(N, 2)
 
         # Initialize graph with n primers
         g = nx.Graph()
-
         edges = []
         weights = []
+
         # Compute weights between all edges
         # Get all pairs of primers + their indices - this returns [((index of item, pair1_item1), (index of item, pair1_item2)), ...]
         pairs_with_idx = itertools.combinations(enumerate(primers), 2)
         for ((idx1, primer1), (idx2, primer2)) in pairs_with_idx:
-            print(f"Computing edit distance between primer {idx1} and {idx2}")
+            self.new_iteration()
+            # Don't let printing slow us down
+            if self.iterations % PRINT_EVERY_NTH_ITERATION_N == 0:
+                print(
+                    f"Iter {self.iterations}\tComputing edit distance between primer {idx1} and {idx2}\t({round(self.iterations / combinations * 100, 2)}%)"
+                )
             # Compute edit distance
             dist = get_edit_distance(primer1, primer2, limit=MIN_EDIT_DISTANCE)
-            # If these are a valid pair, add them as an edge
-            if dist >= MIN_EDIT_DISTANCE:
-                print(
-                    f"Adding edge between {idx1} and {idx2}, distance is at least {dist}"
-                )
+            # DeLOB: only if the nodes are too close, add them to the graph
+            if dist < MIN_EDIT_DISTANCE:
+                # Don't let printing slow us down
+                if self.iterations % PRINT_EVERY_NTH_ITERATION_N == 0:
+                    print(
+                        f"Iter {self.iterations}\tAdding edge between {idx1} and {idx2}, distance is {dist}, less than {MIN_EDIT_DISTANCE}"
+                    )
                 # g.add_edge(idx1, idx2, weight=dist)
                 edges.append((idx1, idx2))
                 weights.append(dist)
 
+        # Add all the edges we computed as tuples of (node1, node2)
         print(f"Adding {len(edges)} edges...")
         g.add_edges_from(edges)
         print(f"Done adding edges")
 
-        print(f"Computing largest cliques...")
-        largest_clique = None
-        largest_clique_len = 0
-        interrupted = False
-        try:
-            for clique in nx.algorithms.clique.find_cliques(g):
-                if len(clique) > largest_clique_len:
-                    largest_clique_len = len(clique)
-                    largest_clique = clique
-                    print(f"Largest clique so far has {len(clique)} nodes")
-                    print(largest_clique)
-        except KeyboardInterrupt:
-            print("We were interrupted in the middle of clique finding!")
-            interrupted = True
+        """
+        DeLOB network algorithm
+        1. Pick a random node in the graph
+        2. Take note of all its neighbours
+        3. Remove the random node from the graph and insert it into the list of valid primers
+        4. Remove all its neighbors from the graph
+        5. Repeat steps 1 -- 4 until there are no more edges
+        """
 
-        print(f"Done computing largest cliques...")
-        print(largest_clique)
-
-        final_primers = [primers[idx] for idx in largest_clique]
-        self.found_new_primers(final_primers)
-        print(f"Number of primers found: {len(final_primers)}")
-        if interrupted:
-            raise KeyboardInterrupt
+        number_of_edges = g.number_of_edges()
+        while number_of_edges != 0:
+            # 1. Pick random node
+            new_valid_primer = random.choice(list(g.nodes()))
+            print(f"New primer: {new_valid_primer}")
+            self.found_new_primer(primers[new_valid_primer])
+            # 2. Get neighbors
+            neighbors = g.neighbors(new_valid_primer)
+            # 3 & 4: Remove node and neighbors from graph
+            g.remove_node(new_valid_primer)
+            g.remove_nodes_from(neighbors)
+            # 5. Recompute current state, print, and cycle back
+            number_of_edges = g.number_of_edges()
+            number_of_nodes = g.number_of_nodes()
+            print(
+                f"Edges remaining: {number_of_edges}, Nodes remaining: {number_of_nodes}"
+            )
+            self.print_metrics()
 
     def generate_n_primers(self, n):
         print(f"Generating {n} primers to begin...")
