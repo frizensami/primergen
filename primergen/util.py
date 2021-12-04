@@ -23,13 +23,14 @@ def write_primers(primers, primer_found_times, total_time_sec=-1, strategy=""):
     path_without_ext = os.path.join(
         DATA_FOLDER, get_filestamp(suffix=f"{strategy}-{len(primers)}primers")
     )
+    # Write the actual primers
     with open(
         path_without_ext + ".txt",
         "w",
     ) as f:
         f.write(f"Total time (seconds):\t{total_time_sec}\n")
         f.write("\n".join(primers))
-
+    # Write the times we found each primer to graph it later
     with open(
         path_without_ext + "-primertimes.txt",
         "w",

@@ -7,7 +7,8 @@ Checks whether a list of primers satisfies these constraints:
 3. Edit distance between any two primers is at least 0.4L (8)
 """
 
-TARGET_PRIMERS = 10000
+RANDOM_PRIMERS_TO_GENERATE = TARGET_PRIMERS * 1
+TARGET_PRIMERS = 2000
 PRIMER_LENGTH = 20
 MIN_EDIT_DISTANCE = int(0.4 * PRIMER_LENGTH)
 MIN_CG_CONTENT = 45
@@ -46,23 +47,13 @@ def are_primers_valid(primers):
     return True
 
 
-def get_valid_primers(primers):
-    """
-    Cuts down an input list of primers into a list that only has valid primers.
-
-    Problem to solve: how do we deal with the combinations? Ideally we would return the maximum subset of primers satisfying the edit distance, but
-    this smells of an NP-hard problem. May have to just do greedy in some way? No idea.
-    """
-    pass
-
-
 def is_right_length(primer) -> bool:
-    return len(primer) == 20
+    return len(primer) == PRIMER_LENGTH
 
 
 def is_gc_valid(primer) -> bool:
     gc_percentage = GC(primer)
-    return MIN_CG_CONTENT <= gc_percentage and gc_percentage <= MAX_CG_CONTENT
+    return MIN_CG_CONTENT <= gc_percentage <= MAX_CG_CONTENT
 
 
 def is_len_gc_valid(primer) -> bool:

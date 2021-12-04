@@ -12,6 +12,14 @@ Metrics:
 1. Total number of valid primers generated 
 2. Primer generation speed (to allow regeneration if the constraints change)
 
+## Current strategies
+1. `random`: completely random primer generation, check GC, check edit dist against all accepted primers so far, add to pool if so.
+1. `random_gc`: generate primers that already have balanced GC content, rest of steps are identical
+1. `random_gc_frequencies`: generate primers that are likely to be as different as possible from the average primer in the pool for each position. Reroll primer generation until we get balanced GC content.
+1. `random_gc_frequencies_noreroll`: Same as before but we don't reroll for valid GC content, we fix it in constant time.
+1. `naive_clique`: Optimal algo (assuming initial number of primers is large enough), find maximum size clique in graph where vertices are primers and edges represent two primers that are far enough away in edit distance
+1. `delob`: Edges now represent two primers that are too /close/ in edit distance. We remove 1 vertex (primers) randomly from graph each time, then remove all of its neighbors, repeat until no more edges.
+
 ## Previous work and algorithms
 - 2009: **DeLOB** algorithm: Xu Q. , Schlabach M.R., Hannon G.J., Elledge S.J. (2009) Design of 240, 000 orthogonal 25mer DNA barcode probes. Proc. Natl. Acad. Sci. U S A, 106, 2289–2294. (https://www.pnas.org/content/pnas/106/7/2289.full.pdf)
   - DeLOB uses: Blast tool with the -F off option turned
@@ -24,8 +32,8 @@ Metrics:
 
 
 ## TODOs
-- TODO: store primers found over time / iterations as a graph
-- TODO: Re-run with further edit distance
+- DONE: store primers found over time / iterations as a graph
+- DONE: Re-run with further edit distance
   - With fixed time, no clear result difference. 10/9/9/10 primers random/gc/freq/noreroll. More PPI for last two but the advantage is not clear yet (4/7/9/8) * 10^-5.
 - TODO: MOST IMPT Implement the network graph node-and-neighbour removal algorithm
   - MOST IMPT See if we can improve that by not just randomly removing nodes  (centrality etc)
