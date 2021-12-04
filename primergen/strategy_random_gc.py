@@ -15,6 +15,7 @@ class RandomBalancedGCPrimerGenerator(BasePrimerGenerator):
         while len(self.primers) < self.target:
             # Stats
             super().new_iteration()
+            self.iterations += 1
             super().print_metrics()
 
             # Create new primer

@@ -8,9 +8,9 @@ Checks whether a list of primers satisfies these constraints:
 """
 
 # Minimum number of acceptable primers
-TARGET_PRIMERS = 2000
+TARGET_PRIMERS = 10000
 # If we are generating more primers to cut down to the target, how many should we have?
-RANDOM_PRIMERS_TO_GENERATE = TARGET_PRIMERS * 1
+RANDOM_PRIMERS_TO_GENERATE = TARGET_PRIMERS * 20
 PRIMER_LENGTH = 20
 MIN_EDIT_DISTANCE = int(0.4 * PRIMER_LENGTH)
 MIN_CG_CONTENT = 45
@@ -84,3 +84,7 @@ def get_edit_distance(p1, p2, limit=None):
     else:
         dist = editdistance.eval(p1, p2)
     return dist
+
+
+def get_edit_distance_with_limit(p1, p2, limit):
+    return levenshtein(p1, p2, limit)

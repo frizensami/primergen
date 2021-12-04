@@ -16,12 +16,12 @@ import random
 import math
 import time
 
-PRINT_EVERY_NTH_ITERATION_N = 20000
+PRINT_EVERY_NTH_ITERATION_N = 100000
 
 
 class CliquePrimerGenerator(BasePrimerGenerator):
     def __init__(self, target=TARGET_PRIMERS):
-        super().__init__(target=target, strategy="delob")
+        super().__init__(target=target, strategy="delob-mindegree")
         self.init_primers = []
 
     def generate(self):
@@ -30,7 +30,7 @@ class CliquePrimerGenerator(BasePrimerGenerator):
         primers = self.generate_n_primers(n=N)
         self.num_starting_primers = N  # For writing to file later
 
-        # How many primer combos total (n choose 2)
+        # How many
         combinations = math.comb(N, 2)
 
         # Initialize graph with n primers
@@ -69,27 +69,33 @@ class CliquePrimerGenerator(BasePrimerGenerator):
                     print(
                         f"Iter {self.iterations}\tAdding edge between {idx1} and {idx2}, distance is {dist}, less than {MIN_EDIT_DISTANCE}"
                     )
-                # g.add_edge(idx1, idx2, weight=dist)
+                # g.add_edge(idx1, idx2)
                 edges.append((idx1, idx2))
 
         # Add all the edges we computed as tuples of (node1, node2)
         print(f"Adding {len(edges)} edges...")
         g.add_edges_from(edges)
+        del edges
         print(f"Done adding edges")
 
         """
-        DeLOB network algorithm
-        1. Pick a random node in the graph
+        DeLOB min degree network algorithm
+        1. Pick the node in the graph with the MINIMUM degree so far (least connections)
         2. Take note of all its neighbours
-        3. Remove the random node from the graph and insert it into the list of valid primers
+        3. Remove the node from the graph and insert it into the list of valid primers
         4. Remove all its neighbors from the graph
         5. Repeat steps 1 -- 4 until there are no more edges
         """
 
         number_of_edges = g.number_of_edges()
+        initial_number_of_nodes = g.number_of_nodes()
+        # Start a timer for when we start to compute edit dists
+        start_node_remove_time = time.process_time()
         while number_of_edges != 0:
+            # MINDEGREE: THE ONLY CHANGE
+            min_degree_node = min(g.degree(), key=lambda x: x[1])[0]
             # 1. Pick random node
-            new_valid_primer = random.choice(list(g.nodes()))
+            new_valid_primer = min_degree_node
             print(f"New primer: {new_valid_primer}")
             self.found_new_primer(primers[new_valid_primer])
             # 2. Get neighbors

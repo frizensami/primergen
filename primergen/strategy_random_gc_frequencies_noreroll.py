@@ -30,7 +30,7 @@ class RandomBalancedGCFrequenciesPrimerGenerator(BasePrimerGenerator):
     def generate(self):
         while len(self.primers) < self.target:
             # Stats
-            super().new_iteration()
+            self.iterations += 1
             super().print_metrics()
 
             # Get an inverse of the current frequencies so we can generate an "as different as possible" primer
