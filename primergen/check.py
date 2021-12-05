@@ -10,7 +10,7 @@ Checks whether a list of primers satisfies these constraints:
 # Minimum number of acceptable primers
 TARGET_PRIMERS = 10000
 # If we are generating more primers to cut down to the target, how many should we have?
-RANDOM_PRIMERS_TO_GENERATE = TARGET_PRIMERS * 20
+RANDOM_PRIMERS_TO_GENERATE = TARGET_PRIMERS * 0.5
 PRIMER_LENGTH = 20
 MIN_EDIT_DISTANCE = int(0.4 * PRIMER_LENGTH)
 MIN_CG_CONTENT = 45

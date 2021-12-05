@@ -136,3 +136,12 @@ def generate_primer_from_frequencies_and_balanced_gc_by_rerolling(
         if num_gcs >= min_gc and num_gcs <= max_gc:
             # print(f"Got a balanced GC primer {primer}, returning")
             return "".join(primer)
+
+
+def generate_n_primers(n):
+    print(f"Generating {n} primers to begin...")
+    primers = []
+    for i in range(n):
+        primers.append(random_primer_with_balanced_gc())
+    print(f"Done generating {n} primers")
+    return primers

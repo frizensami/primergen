@@ -16,7 +16,7 @@ import random
 import math
 import time
 
-PRINT_EVERY_NTH_ITERATION_N = 100000
+PRINT_EVERY_NTH_ITERATION_N = 20000
 
 
 class CliquePrimerGenerator(BasePrimerGenerator):

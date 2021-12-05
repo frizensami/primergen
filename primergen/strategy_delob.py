@@ -87,6 +87,9 @@ class CliquePrimerGenerator(BasePrimerGenerator):
         """
 
         number_of_edges = g.number_of_edges()
+        initial_number_of_nodes = g.number_of_nodes()
+        # Start a timer for when we start to compute edit dists
+        start_node_remove_time = time.process_time()
         while number_of_edges != 0:
             # 1. Pick random node
             new_valid_primer = random.choice(list(g.nodes()))
