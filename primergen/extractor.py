@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
-PRIMER_FILE = "20211204-141808-10000-primers.txt"
+PRIMER_FILE = "20211205-141133-100000-primers.txt"
+# PRIMER_FILE = "20211204-141808-10000-primers.txt"
+# PRIMER_FILE = "20211204-174137-5000-primers.txt"
+# PRIMER_FILE = "20211205-112001-2000-primers.txt"
 
 
 def get_primers():

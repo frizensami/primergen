@@ -4,6 +4,8 @@ from check import *
 from util import write_primers, random_primer
 import time
 import random
+import numpy
+
 
 PRIMERS_PER_SECOND_PERIOD_SEC = 1
 
@@ -30,6 +32,10 @@ class BasePrimerGenerator:
         # Times that primers were found
         # Expect list of tuples, each tuple is (time, number of primers)
         self.primer_found_times = []
+
+        # Seed random same for all extractors
+        random.seed(246)
+        numpy.random.seed(4812)
 
     def execute(self):
         """
