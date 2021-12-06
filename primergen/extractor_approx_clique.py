@@ -14,7 +14,9 @@ USE_EDGES_FILE = False
 
 
 class DelobPrimerExtractor(BasePrimerExtractor):
-    def __init__(self, initial_primers, target=TARGET_PRIMERS, strategy="naive-clique"):
+    def __init__(
+        self, initial_primers, target=TARGET_PRIMERS, strategy="approx-clique"
+    ):
         super().__init__(initial_primers, target, strategy)
 
     def generate(self):
@@ -68,7 +70,7 @@ class DelobPrimerExtractor(BasePrimerExtractor):
                     primer1, primer2, limit=MIN_EDIT_DISTANCE
                 )
                 # DeLOB: only if the nodes are too close, add them to the graph
-                if dist >= MIN_EDIT_DISTANCE:
+                if dist < MIN_EDIT_DISTANCE:
                     # Don't let printing slow us down
                     if self.iterations % PRINT_EVERY_NTH_ITERATION_N == 0:
                         print(
@@ -91,27 +93,8 @@ class DelobPrimerExtractor(BasePrimerExtractor):
         5. Repeat steps 1 -- 4 until there are no more edges
         """
 
-        print(f"Computing largest cliques...")
-        largest_clique = None
-        largest_clique_len = 0
-        interrupted = False
-        try:
-            # Size of find_cliques could be exponential
-            cliques_found = 0
-            for clique in nx.algorithms.clique.find_cliques(g):
-                cliques_found += 1
-                print(
-                    f"Number of cliques found:\t{cliques_found} out of unknown amount (could be exponential)"
-                )
-                if len(clique) > largest_clique_len:
-                    largest_clique_len = len(clique)
-                    largest_clique = clique
-                    print(f"Largest clique so far has {len(clique)} nodes")
-                    print(largest_clique)
-        except KeyboardInterrupt:
-            print("We were interrupted in the middle of clique finding!")
-            interrupted = True
-
+        print(f"Computing APPROXIMATE (V/(logV)^2) largest maximum independent set...")
+        largest_clique = nx.algorithms.approximation.clique.maximum_independent_set(g)
         print(f"Done computing largest cliques...")
         print(largest_clique)
 
