@@ -10,7 +10,6 @@ from extractor import get_primers, PRIMER_FILE
 import re
 
 PRINT_EVERY_NTH_ITERATION_N = 20000
-USE_EDGES_FILE = False
 
 
 class DelobPrimerExtractor(BasePrimerExtractor):
@@ -100,9 +99,11 @@ class DelobPrimerExtractor(BasePrimerExtractor):
             cliques_found = 0
             for clique in nx.algorithms.clique.find_cliques(g):
                 cliques_found += 1
-                print(
-                    f"Number of cliques found:\t{cliques_found} out of unknown amount (could be exponential)"
-                )
+                # Don't let printing slow us down
+                if cliques_found % PRINT_EVERY_NTH_ITERATION_N == 0:
+                    print(
+                        f"Number of cliques found:\t{cliques_found} out of unknown amount (could be exponential)"
+                    )
                 if len(clique) > largest_clique_len:
                     largest_clique_len = len(clique)
                     largest_clique = clique

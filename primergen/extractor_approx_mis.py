@@ -8,9 +8,12 @@ import math
 import time
 from extractor import get_primers, PRIMER_FILE
 import re
+from graph_utils import *
+import sys
+
+sys.setrecursionlimit(150000)
 
 PRINT_EVERY_NTH_ITERATION_N = 20000
-USE_EDGES_FILE = False
 
 
 class DelobPrimerExtractor(BasePrimerExtractor):
@@ -84,6 +87,9 @@ class DelobPrimerExtractor(BasePrimerExtractor):
         g.add_edges_from(edges)
         print(f"Done adding edges")
 
+        # Add primers that weren't added to the graph to the final list (no conflicts)
+        self.found_new_primers(get_no_conflict_primers(g, self.initial_primers))
+
         """
         DeLOB network algorithm
         1. Pick a random node in the graph
@@ -101,8 +107,6 @@ class DelobPrimerExtractor(BasePrimerExtractor):
         final_primers = [self.initial_primers[idx] for idx in largest_clique]
         self.found_new_primers(final_primers)
         print(f"Number of primers found: {len(final_primers)}")
-        if interrupted:
-            raise KeyboardInterrupt
 
 
 if __name__ == "__main__":

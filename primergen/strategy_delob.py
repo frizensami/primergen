@@ -15,6 +15,7 @@ from util import random_primer_with_balanced_gc
 import random
 import math
 import time
+from graph_utils import *
 
 PRINT_EVERY_NTH_ITERATION_N = 20000
 
@@ -76,6 +77,9 @@ class CliquePrimerGenerator(BasePrimerGenerator):
         print(f"Adding {len(edges)} edges...")
         g.add_edges_from(edges)
         print(f"Done adding edges")
+
+        # Add primers that weren't added to the graph to the final list (no conflicts)
+        self.found_new_primers(get_no_conflict_primers(g, self.initial_primers))
 
         """
         DeLOB network algorithm

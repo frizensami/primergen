@@ -8,9 +8,11 @@ import math
 import time
 from extractor import get_primers, PRIMER_FILE
 import re
+from graph_utils import *
+
+import pickle
 
 PRINT_EVERY_NTH_ITERATION_N = 20000
-USE_EDGES_FILE = True
 
 
 class DelobPrimerExtractor(BasePrimerExtractor):
@@ -77,10 +79,17 @@ class DelobPrimerExtractor(BasePrimerExtractor):
                     # g.add_edge(idx1, idx2, weight=dist)
                     edges.append((idx1, idx2))
 
+            # # Write to edges
+            # with open("edges-9ed.pkl", "wb") as f:
+            #     pickle.dump(edges, f)
+
         # Add all the edges we computed as tuples of (node1, node2)
         print(f"Adding {len(edges)} edges...")
         g.add_edges_from(edges)
         print(f"Done adding edges")
+
+        # Add primers that weren't added to the graph to the final list (no conflicts)
+        self.found_new_primers(get_no_conflict_primers(g, self.initial_primers))
 
         """
         DeLOB network algorithm

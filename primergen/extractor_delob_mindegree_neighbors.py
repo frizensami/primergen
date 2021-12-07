@@ -9,12 +9,13 @@ import time
 from extractor import get_primers, PRIMER_FILE
 import itertools
 import sys
+from graph_utils import *
+import pickle
 
 from collections import Counter
 import re
 
 PRINT_EVERY_NTH_ITERATION_N = 20000
-USE_EDGES_FILE = True
 
 
 class DelobPrimerExtractor(BasePrimerExtractor):
@@ -35,20 +36,24 @@ class DelobPrimerExtractor(BasePrimerExtractor):
         edges = []
 
         if USE_EDGES_FILE:
-            edges_filename = PRIMER_FILE.split(".")[0] + "-edges.txt"
-            with open(edges_filename, "r") as f:
-                edges_str = f.read()
-                edges_ints = list(
-                    map(int, re.sub("[ [\\]\(\)]", "", edges_str).split(","))
-                )
-                edges = [
-                    (edges_ints[i], edges_ints[i + 1])
-                    for i in range(0, len(edges_ints), 2)
-                ]
-                # print(edges)
-                del edges_str
-                del edges_ints
-                # print(edges)
+            edges_filename = PRIMER_FILE.split(".")[0] + "-edges.pkl"
+            with open(edges_filename, "rb") as f:
+                edges = pickle.load(f)
+
+            # edges_filename = PRIMER_FILE.split(".")[0] + "-edges.txt"
+            # with open(edges_filename, "r") as f:
+            #     edges_str = f.read()
+            #     edges_ints = list(
+            #         map(int, re.sub("[ [\\]\(\)]", "", edges_str).split(","))
+            #     )
+            #     edges = [
+            #         (edges_ints[i], edges_ints[i + 1])
+            #         for i in range(0, len(edges_ints), 2)
+            #     ]
+            #     # print(edges)
+            #     del edges_str
+            #     del edges_ints
+            # print(edges)
         else:
             # Compute weights between all edges
             # Get all pairs of primers + their indices - this returns [((index of item, pair1_item1), (index of item, pair1_item2)), ...]
@@ -88,7 +93,11 @@ class DelobPrimerExtractor(BasePrimerExtractor):
         # Add all the edges we computed as tuples of (node1, node2)
         print(f"Adding {len(edges)} edges...")
         g.add_edges_from(edges)
+        del edges
         print(f"Done adding edges")
+
+        # Add primers that weren't added to the graph to the final list (no conflicts)
+        self.found_new_primers(get_no_conflict_primers(g, self.initial_primers))
 
         # with open("edges.txt", "w") as f:
         #     f.write(str(edges))
