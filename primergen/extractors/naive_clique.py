@@ -74,12 +74,10 @@ class NaiveCliquePrimerExtractor(BasePrimerExtractor):
         print(f"Done adding edges")
 
         """
-        DeLOB network algorithm
-        1. Pick a random node in the graph
-        2. Take note of all its neighbours
-        3. Remove the random node from the graph and insert it into the list of valid primers
-        4. Remove all its neighbors from the graph
-        5. Repeat steps 1 -- 4 until there are no more edges
+        "Optimal" algorithm:
+        Find the largest clique in the graph.
+        Since all node in the clique will be connected to all other nodes, this forms a valid primer set.
+        Since it's the largest possible clique, this is optimal for the given input list of primers.
         """
 
         print(f"Computing largest cliques...")
