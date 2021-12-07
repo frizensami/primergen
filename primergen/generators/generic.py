@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-from util import write_primers
-from check import *
-from util import write_primers, random_primer
 import time
 import random
 import numpy
+from primergen.common.check import *
+from primergen.common.util import write_primers, random_primer
 
 
 PRIMERS_PER_SECOND_PERIOD_SEC = 1

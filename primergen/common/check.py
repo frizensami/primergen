@@ -12,7 +12,7 @@ TARGET_PRIMERS = 10000
 # If we are generating more primers to cut down to the target, how many should we have?
 RANDOM_PRIMERS_TO_GENERATE = TARGET_PRIMERS * 0.02
 PRIMER_LENGTH = 20
-MIN_EDIT_DISTANCE = 9  # int(0.4 * PRIMER_LENGTH)
+MIN_EDIT_DISTANCE = 8  # int(0.4 * PRIMER_LENGTH)
 MIN_CG_CONTENT = 45
 MAX_CG_CONTENT = 55
 

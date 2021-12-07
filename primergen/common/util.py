@@ -3,8 +3,9 @@
 import time
 import os
 import random
+from importlib import resources
 
-DATA_FOLDER = "data/"
+DATA_FOLDER = "primergen/output"
 ALPHABET = ["A", "T", "C", "G"]
 GC = ["G", "C"]
 AT = ["A", "T"]
@@ -35,13 +36,13 @@ def write_primers(
             f"Number of initial primers we cut down from (-1 if doesn't apply):\t{num_starting_primers}\n"
         )
         f.write("\n".join(primers))
-    # Write the times we found each primer to graph it later
+        # Write the times we found each primer to graph it later
     with open(
         path_without_ext + "-primertimes.txt",
         "w",
     ) as f:
-        for (time, primers) in primer_found_times:
-            f.write(f"{time},{primers}\n")
+        for (time, num_primers) in primer_found_times:
+            f.write(f"{time},{num_primers}\n")
 
 
 def random_primer(length=20):
@@ -74,7 +75,7 @@ def generate_primer_from_frequencies_and_balanced_gc(
     # Generate /length/ number of nts with relative frequencies
     primer = [random.choices(ALPHABET, frequencies[i], k=1)[0] for i in range(length)]
     # This primer may not have a balanced GC count, so count GCs
-    num_gcs = sum(map(lambda nt: 1 if nt == "G" or nt == "C" else 0, primer))
+    num_gcs = sum(map(lambda nt: 1 if nt in ("G", "C") else 0, primer))
 
     # print(f"Initial primer is {primer}")
     # print(f"We have {num_gcs} G and Cs")

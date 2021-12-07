@@ -1,25 +1,23 @@
 #!/usr/bin/env python3
-from extractor_generic import BasePrimerExtractor
-import networkx as nx
-from check import *
-from util import random_primer_with_balanced_gc
 import random
 import math
 import time
-from extractor import get_primers, PRIMER_FILE
-import itertools
+import sys
 import re
-from graph_utils import *
-import pickle
 
-from collections import Counter
+import networkx as nx
+from primergen.common.check import *
+from primergen.common.util import random_primer_with_balanced_gc
+from primergen.common.graph_utils import *
+
+from .base import BasePrimerExtractor
 
 PRINT_EVERY_NTH_ITERATION_N = 20000
 
 
-class DelobPrimerExtractor(BasePrimerExtractor):
+class DelobMinDegreePrimerExtractor(BasePrimerExtractor):
     def __init__(
-        self, initial_primers, target=TARGET_PRIMERS, strategy="delob-mindegree"
+        self, initial_primers=None, target=TARGET_PRIMERS, strategy="delob-min-degree"
     ):
         super().__init__(initial_primers, target, strategy)
 
@@ -32,23 +30,7 @@ class DelobPrimerExtractor(BasePrimerExtractor):
         edges = []
 
         if USE_EDGES_FILE:
-            edges_filename = PRIMER_FILE.split(".")[0] + "-edges.pkl"
-            with open(edges_filename, "rb") as f:
-                edges = pickle.load(f)
-            # edges_filename = PRIMER_FILE.split(".")[0] + "-edges.txt"
-            # with open(edges_filename, "r") as f:
-            #     edges_str = f.read()
-            #     edges_ints = list(
-            #         map(int, re.sub("[ [\\]\(\)]", "", edges_str).split(","))
-            #     )
-            #     edges = [
-            #         (edges_ints[i], edges_ints[i + 1])
-            #         for i in range(0, len(edges_ints), 2)
-            #     ]
-            #     # print(edges)
-            #     del edges_str
-            #     del edges_ints
-            # print(edges)
+            edges = self.get_edges_file_pkl()
         else:
 
             # # Compute weights between all edges
@@ -147,4 +129,4 @@ class DelobPrimerExtractor(BasePrimerExtractor):
 
 
 if __name__ == "__main__":
-    DelobPrimerExtractor(initial_primers=get_primers()).execute()
+    DelobMinDegreePrimerExtractor().execute()

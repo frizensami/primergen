@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
-
-from extractor_generic import BasePrimerExtractor
-from check import *
-from extractor import get_primers
+import random
+import math
 import time
+import sys
+import re
 
-PRINT_EVERY_NTH_ITERATION_N = 2000
+import networkx as nx
+from primergen.common.check import *
+from primergen.common.util import random_primer_with_balanced_gc
+from primergen.common.graph_utils import *
+
+from .base import BasePrimerExtractor
+
+PRINT_EVERY_NTH_ITERATION_N = 20000
 
 
 class GreedyPrimerExtractor(BasePrimerExtractor):
-    def __init__(self, initial_primers, target=TARGET_PRIMERS, strategy="greedy"):
+    def __init__(self, initial_primers=None, target=TARGET_PRIMERS, strategy="greedy"):
         super().__init__(initial_primers, target, strategy)
 
     def generate(self):
@@ -45,4 +52,4 @@ class GreedyPrimerExtractor(BasePrimerExtractor):
 
 
 if __name__ == "__main__":
-    GreedyPrimerExtractor(initial_primers=get_primers()).execute()
+    GreedyPrimerExtractor().execute()

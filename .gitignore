@@ -4,10 +4,10 @@
 tmp/
 
 # Data dir
-primergen/data/
-primergen/*-edges.txt
-primergen/*-edges*.txt
-primergen/*.pkl
+primergen/output/
+primergen/input/*-edges.txt
+primergen/input/*-edges*.txt
+primergen/input/*.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
