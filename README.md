@@ -5,7 +5,7 @@ This is an **open-source** set of **techniques** with **reproducible benchmarks*
 ## Project goals and metrics
 Generate as many primers (or extract as many primers from a fixed list) as possible with these constraints:
 
-1. Each primer has L=20 nucleotides
+1. Each primer has L = 20 nucleotides
 1. Each primer must have a ratio of ((G + C) / (A + T + G + C)) between 0.45 and 0.55 ("balanced GC content")
 1. Any two pairs of primers must have an edit distance >= 8 (0.4 * L)
 
