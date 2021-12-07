@@ -1,9 +1,18 @@
-#!/usr/bin/env python3
-from check import *
-from util import write_primers, random_primer
-import time
+#!/usr/bin/env python3#!
 import random
-from strategy_generic import BasePrimerGenerator
+import math
+import time
+import sys
+import re
+
+import networkx as nx
+from primergen.common.check import *
+from primergen.common.util import (
+    random_primer,
+)
+from primergen.common.graph_utils import *
+
+from .base import BasePrimerGenerator
 
 
 class RandomPrimerGenerator(BasePrimerGenerator):

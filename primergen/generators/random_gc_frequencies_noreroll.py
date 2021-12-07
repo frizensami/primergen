@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
-import numpy as np
-from check import *
-from util import (
-    write_primers,
+import random
+import math
+import time
+import sys
+import re
+
+import networkx as nx
+from primergen.common.check import *
+from primergen.common.util import (
     generate_primer_from_frequencies_and_balanced_gc,
     generate_primer_from_frequencies_and_balanced_gc_by_rerolling,
 )
-import time
-import random
-from strategy_generic import BasePrimerGenerator
+from primergen.common.graph_utils import *
+
+from .base import BasePrimerGenerator
 
 """
 TODO: optimize for furthest possible edit distance (increase edit distance minimum and see who can go the furthest)
